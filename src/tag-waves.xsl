@@ -7,8 +7,8 @@
   <xsl:output method="xml" version="1.0" indent="yes" />
   <xsl:strip-space elements="*"/>
 
-  <xsl:param name="WaveBasePath" as="xs:string" />
-  <xsl:param name="FlacBasePath" as="xs:string" />
+  <xsl:param name="WaveBasePath" as="xs:anyURI" />
+  <xsl:param name="FlacBasePath" as="xs:anyURI" />
 
   <xsl:template match="/DJ_PLAYLISTS">
     <xsl:copy>
@@ -28,86 +28,88 @@
   </xsl:template>
 
   <xsl:template name="TrackMetadata">
-    <xsl:param name="FlacFile" />
+    <xsl:param name="FlacElem" />
 
     <xsl:attribute name="Name">
-      <xsl:value-of select="$FlacFile/@Name" />
+      <xsl:value-of select="$FlacElem/@Name" />
     </xsl:attribute>
     <xsl:attribute
       name="Artist">
-      <xsl:value-of select="$FlacFile/@Artist" />
+      <xsl:value-of select="$FlacElem/@Artist" />
     </xsl:attribute>
     <xsl:attribute
       name="Composer">
-      <xsl:value-of select="$FlacFile/@Composer" />
+      <xsl:value-of select="$FlacElem/@Composer" />
     </xsl:attribute>
     <xsl:attribute
       name="Album">
-      <xsl:value-of select="$FlacFile/@Album" />
+      <xsl:value-of select="$FlacElem/@Album" />
     </xsl:attribute>
     <xsl:attribute
       name="Grouping">
-      <xsl:value-of select="$FlacFile/@Grouping" />
+      <xsl:value-of select="$FlacElem/@Grouping" />
     </xsl:attribute>
     <xsl:attribute
       name="Genre">
-      <xsl:value-of select="$FlacFile/@Genre" />
+      <xsl:value-of select="$FlacElem/@Genre" />
     </xsl:attribute>
     <xsl:attribute
       name="DiscNumber">
-      <xsl:value-of select="$FlacFile/@DiscNumber" />
+      <xsl:value-of select="$FlacElem/@DiscNumber" />
     </xsl:attribute>
     <xsl:attribute
       name="TrackNumber">
-      <xsl:value-of select="$FlacFile/@TrackNumber" />
+      <xsl:value-of select="$FlacElem/@TrackNumber" />
     </xsl:attribute>
     <xsl:attribute
       name="Year">
-      <xsl:value-of select="$FlacFile/@Year" />
+      <xsl:value-of select="$FlacElem/@Year" />
     </xsl:attribute>
     <xsl:attribute
       name="AverageBpm">
-      <xsl:value-of select="$FlacFile/@AverageBpm" />
+      <xsl:value-of select="$FlacElem/@AverageBpm" />
     </xsl:attribute>
     <xsl:attribute
       name="Comments">
-      <xsl:value-of select="$FlacFile/@Comments" />
+      <xsl:value-of select="$FlacElem/@Comments" />
     </xsl:attribute>
     <xsl:attribute
       name="Rating">
-      <xsl:value-of select="$FlacFile/@Rating" />
+      <xsl:value-of select="$FlacElem/@Rating" />
     </xsl:attribute>
     <xsl:attribute
       name="Remixer">
-      <xsl:value-of select="$FlacFile/@Remixer" />
+      <xsl:value-of select="$FlacElem/@Remixer" />
     </xsl:attribute>
     <xsl:attribute
       name="Tonality">
-      <xsl:value-of select="$FlacFile/@Tonality" />
+      <xsl:value-of select="$FlacElem/@Tonality" />
     </xsl:attribute>
     <xsl:attribute
       name="Label">
-      <xsl:value-of select="$FlacFile/@Label" />
+      <xsl:value-of select="$FlacElem/@Label" />
     </xsl:attribute>
     <xsl:attribute
       name="Mix">
-      <xsl:value-of select="$FlacFile/@Mix" />
+      <xsl:value-of select="$FlacElem/@Mix" />
     </xsl:attribute>
 
     <xsl:copy-of
-      select="$FlacFile/*" />
+      select="$FlacElem/*" />
   </xsl:template>
 
   <xsl:template match="TRACK[@Kind='WAV File'][matches(@Location,$WaveBasePath)]">
-    <xsl:variable name="FileKey"
+    <xsl:variable name="FlacFile"
       select="replace(replace(@Location, $WaveBasePath, $FlacBasePath), '\.wav', '.flac')" />
-      <!-- <xsl:if test="$FlacFile != ''" ></xsl:if> -->
+    <xsl:variable name="FlacElem" select="../TRACK[@Location=$FlacFile]" />
 
-    <xsl:copy>
-      <xsl:copy-of select="@*" />
-      <xsl:call-template name="TrackMetadata">
-        <xsl:with-param name="FlacFile" select="../TRACK[@Location=$FileKey]" />
-      </xsl:call-template>
-    </xsl:copy>
+      <xsl:if test="exists($FlacElem)">
+        <xsl:copy>
+          <xsl:copy-of select="@*" />
+          <xsl:call-template name="TrackMetadata">
+            <xsl:with-param name="FlacElem" select="$FlacElem" />
+          </xsl:call-template>
+        </xsl:copy>
+      </xsl:if>
   </xsl:template>
 </xsl:stylesheet>
