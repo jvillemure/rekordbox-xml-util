@@ -7,8 +7,8 @@
   <xsl:output method="xml" version="1.0" indent="yes" />
   <xsl:strip-space elements="*"/>
 
-  <xsl:param name="WaveBasePath" as="xs:anyURI" />
-  <xsl:param name="FlacBasePath" as="xs:anyURI" />
+  <xsl:param name="WaveBasePath" as="xs:string" />
+  <xsl:param name="FlacBasePath" as="xs:string" />
 
   <xsl:template match="/DJ_PLAYLISTS">
     <xsl:copy>
