@@ -1,8 +1,0 @@
-{
-	"xml.fileAssociations": [
-		{
-			"pattern": "**/tag-waves.xsl",
-			"systemId": "https://www.w3.org/2007/schema-for-xslt20.xsd"
-		}
-	]
-}
